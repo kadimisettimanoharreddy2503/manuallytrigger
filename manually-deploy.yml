@@ -1,0 +1,69 @@
+name: Manual Feature Deployment Test
+
+# Workflow for testing manual deployment of feature branches
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select environment"
+        required: true
+        default: "develop"
+        type: choice
+        options:
+          - develop
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Print Branch Name
+        run: |
+          echo "Current branch is:"
+          echo "${{ github.ref_name }}"
+
+      - name: Print Selected Environment
+        run: |
+          echo "Selected environment:"
+          echo "${{ github.event.inputs.environment }}"
+
+      - name: Validate Feature Branch
+        run: |
+          BRANCH="${{ github.ref_name }}"
+
+          if [[ "$BRANCH" == feature/* ]]; then
+            echo "Feature branch validation successful"
+          else
+            echo "This is not a feature branch"
+            exit 1
+          fi
+
+      - name: Simulate Dependency Installation
+        run: |
+          echo "Installing dependencies..."
+          sleep 5
+          echo "Dependencies installed successfully"
+
+      - name: Simulate Build
+        run: |
+          echo "Starting build..."
+          sleep 5
+          echo "Build completed"
+
+      - name: Simulate Deployment
+        run: |
+          echo "Deploying to ${{ github.event.inputs.environment }}"
+          sleep 5
+          echo "Deployment successful"
+
+      - name: Final Status
+        run: |
+          echo "Workflow completed successfully"
+
+# testing push
